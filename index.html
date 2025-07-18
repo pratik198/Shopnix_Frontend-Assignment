@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopnix - One Page Setup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary-orange: #FF6B35;
+            --primary-turquoise: #1A9CB0;
+            --primary-blue: #2D5FDE;
+            --light-gray: #F8F9FA;
+            --dark-gray: #2D3748;
+            --medium-gray: #718096;
+            --success-green: #38A169;
+            --warning-yellow: #FFDC5E;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .onboarding-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2.2rem;
+        }
+
+        /* Enhanced Step Indicator */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 3rem 0;
+            padding: 0 2rem;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 28px;
+            left: 50px;
+            right: 50px;
+            height: 8px;
+            background: linear-gradient(90deg,
+                    var(--primary-orange) 0%,
+                    var(--primary-blue) 50%,
+                    var(--success-green) 100%);
+            background-size: 200% 100%;
+            background-position: 0% 0%;
+            z-index: 1;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-position 0.5s ease;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--medium-gray);
+            border: 4px solid var(--light-gray);
+            font-size: 1.3rem;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step.active .step-icon {
+            background: white;
+            color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(45, 95, 222, 0.3);
+        }
+
+        .step.completed .step-icon {
+            background: var(--success-green);
+            color: white;
+            border-color: var(--success-green);
+            box-shadow: 0 0 15px rgba(56, 161, 105, 0.3);
+        }
+
+        .step-label {
+            font-size: 0.95rem;
+            text-align: center;
+            color: var(--medium-gray);
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .step.completed .step-label {
+            color: var(--success-green);
+        }
+
+        .step-label::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background-color: currentColor;
+            border-radius: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active .step-label::before,
+        .step.completed .step-label::before {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-next,
+        .btn-back,
+        .btn-complete {
+            margin-top: 2rem;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-next {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(45, 95, 222, 0.3);
+        }
+
+        .btn-next:hover {
+            background-color: #1a4bc4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(45, 95, 222, 0.4);
+        }
+
+        .btn-back {
+            background-color: white;
+            color: var(--dark-gray);
+            border: 2px solid var(--medium-gray);
+        }
+
+        .btn-back:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            border-color: var(--dark-gray);
+        }
+
+        .btn-complete {
+            background-color: var(--success-green);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-complete:hover {
+            background-color: #2F855A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(56, 161, 105, 0.4);
+        }
+
+        .btn-next:disabled {
+            background-color: #cbd5e0;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Theme cards */
+        .theme-card {
+            border-radius: 16px;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid transparent;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-card.selected {
+            border-color: white;
+            box-shadow: 0 0 0 3px var(--primary-blue), 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-info {
+            padding: 2rem;
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-select {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 30px;
+            padding: 8px 20px;
+        }
+
+        .btn-select:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-select.active {
+            background-color: #ffffff;
+            color: var(--dark-gray);
+            font-weight: 600;
+            border-color: white;
+        }
+
+        /* Flow chart */
+        .flow-chart {
+            background: rgba(248, 249, 250, 0.7);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .flow-chart .box {
+            padding: 0.75rem 1.25rem;
+            margin: 0.5rem auto;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 200px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-type {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .category,
+        .sub-category {
+            background-color: var(--warning-yellow);
+        }
+
+        .product {
+            background-color: #cfd9ff;
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--medium-gray);
+            margin: 10px 0;
+        }
+
+        /* Product preview */
+        .product-preview {
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+            border-radius: 16px;
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            transition: all 0.3s ease;
+            position: sticky;
+            top: 20px;
+        }
+
+        .product-preview:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .preview-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: all 0.3s ease;
+        }
+
+        .preview-image i {
+            font-size: 3rem;
+            color: #cbd5e0;
+        }
+
+        .product-preview h5 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .product-preview p {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
+        /* Image upload */
+        .image-upload-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-upload-label {
+            display: block;
+            width: 100%;
+            padding: 1.5rem;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .image-upload-label:hover {
+            border-color: var(--primary-blue);
+            background-color: rgba(45, 95, 222, 0.05);
+        }
+
+        .image-upload-label i {
+            font-size: 2rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-label p {
+            margin-bottom: 0;
+            color: var(--medium-gray);
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        /* Form styles */
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(45, 95, 222, 0.1), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control.is-invalid {
+            border-color: #e53e3e;
+        }
+
+        .invalid-feedback {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-gray);
+            display: block;
+        }
+
+        .form-check {
+            margin-bottom: 1rem;
+        }
+
+        .form-check-input {
+            margin-right: 0.5rem;
+        }
+
+        /* Scrollable pricing section */
+        .pricing-section-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .pricing-section-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .pricing-section-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .pricing-section-container::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        .pricing-section-container::-webkit-scrollbar-thumb:hover {
+            background: #1a4bc4;
+        }
+
+        .pricing-section {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .pricing-card {
+            background-color: white;
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button group */
+        .btn-group-step3 {
+            display: flex;
+            gap: 10px;
+            margin-top: 2rem;
+        }
+
+        /* Success screen */
+        .success-screen {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--success-green);
+            margin-bottom: 1.5rem;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-gray);
+        }
+
+        .success-message {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .onboarding-container {
+                padding: 1.5rem;
+            }
+
+            .step-indicator {
+                margin: 2rem 0;
+                padding: 0;
+            }
+
+            .step-indicator::before {
+                left: 30px;
+                right: 30px;
+            }
+
+            .step-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.1rem;
+            }
+
+            .step-label {
+                font-size: 0.85rem;
+            }
+
+            .product-preview {
+                padding: 1.5rem;
+                margin-top: 2rem;
+                position: static;
+            }
+
+            .btn-group-step3 {
+                flex-direction: column;
+            }
+
+            .btn-back,
+            .btn-complete {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .step-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .step-indicator::before {
+                left: 20px;
+                right: 20px;
+                height: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="onboarding-container">
+        <header class="brand-header">
+            <a href="#" class="logo">
+                <i class="fas fa-cloud"></i>
+                Shopnix
+            </a>
+        </header>
+
+        <!-- Enhanced Step Indicator -->
+        <div class="step-indicator">
+            <div class="step" id="step-1">
+                <div class="step-icon active">1</div>
+                <div class="step-label active">Select Theme</div>
+            </div>
+            <div class="step" id="step-2">
+                <div class="step-icon">2</div>
+                <div class="step-label">Product Categories</div>
+            </div>
+            <div class="step" id="step-3">
+                <div class="step-icon">3</div>
+                <div class="step-label">Add Product</div>
+            </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step-content active" data-step="1">
+            <h2 class="mb-4">Choose Your Store Theme</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="theme-card" style="background: linear-gradient(135deg, #FF6B35, #FF9F73);">
+                        <div class="theme-info">
+                            <h4>Bags Theme</h4>
+                            <p>Vibrant style for accessories</p>
+                            <button class="btn btn-select select-theme">Select Theme</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="theme-card" style="background: linear-gradient(135deg, #1A9CB0, #6EC6D2);">
+                        <div class="theme-info">
+                            <h4>Flex Theme</h4>
+                            <p>Clean and versatile design</p>
+                            <button class="btn btn-select select-theme">Select Theme</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="theme-card" style="background: linear-gradient(135deg, #2D5FDE, #6B8EEF);">
+                        <div class="theme-info">
+                            <h4>Chic Theme</h4>
+                            <p>Elegant look for premium items</p>
+                            <button class="btn btn-select select-theme">Select Theme</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-next mt-4 d-none" id="toStep2">Continue</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-content" data-step="2">
+            <h2>Let's add a type, Category and Sub-category</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Product Type <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="productTypeInput" placeholder="e.g. Books"
+                            required />
+                        <div class="invalid-feedback">Please enter a product type</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category (optional)</label>
+                        <input type="text" class="form-control" id="categoryInput" placeholder="e.g. Academic Book" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sub-category (optional)</label>
+                        <input type="text" class="form-control" id="subCategoryInput" placeholder="e.g. Medical Book" />
+                    </div>
+                    <button class="btn btn-back" id="backToStep1">Back</button>
+                    <button class="btn btn-next" id="toStep3" disabled>Next</button>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div class="flow-chart mt-3">
+                        <div class="box product-type" id="productTypeBox">Product type</div>
+                        <div class="arrow">↓</div>
+                        <div class="box category" id="categoryBox">Category</div>
+                        <div class="arrow">↓</div>
+                        <div class="box sub-category" id="subCategoryBox">Sub-category</div>
+                        <div class="arrow">→</div>
+                        <div class="box product">Product</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-content" data-step="3">
+            <h2>Let's add your first product</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="mb-3">Basic Details</h4>
+                    <div class="mb-3">
+                        <label class="form-label">Product name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="prodName" placeholder="e.g. Anatomy Book"
+                            required />
+                        <div class="invalid-feedback">Please enter a product name</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Product Description</label>
+                        <textarea class="form-control" id="prodDesc" rows="3"
+                            placeholder="Enter product description..."></textarea>
+                    </div>
+                    <div class="mb-3 image-upload-container">
+                        <label class="form-label">Product Image</label>
+                        <label for="prodImage" class="image-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload product image</p>
+                            <p class="small">Recommended size: 800x800px</p>
+                        </label>
+                        <input type="file" class="image-upload-input" id="prodImage" accept="image/*" />
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="hasSKU" checked>
+                            <label class="form-check-label" for="hasSKU">
+                                This product has an SKU code
+                            </label>
+                        </div>
+                        <input type="text" class="form-control mt-2" id="skuCode" placeholder="e.g. PROD0001" />
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="hasHSN">
+                            <label class="form-check-label" for="hasHSN">
+                                This product has an HSN/SAC code
+                            </label>
+                        </div>
+                        <input type="text" class="form-control mt-2" id="hsnCode" placeholder="e.g. 123456"
+                            style="display: none;" />
+                    </div>
+
+                    <!-- Scrollable Pricing Section -->
+                    <h4 class="mt-4 mb-3">Pricing Details</h4>
+                    <div class="pricing-section-container">
+                        <div class="pricing-section">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="includeGST" checked>
+                                <label class="form-check-label" for="includeGST">
+                                    Price inclusive of GST
+                                </label>
+                            </div>
+
+                            <div class="pricing-grid">
+                                <div class="pricing-card">
+                                    <label class="form-label">Net price (₹) <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="netPrice" placeholder="e.g. 50"
+                                        min="0" step="0.01" required />
+                                    <div class="invalid-feedback">Please enter a valid price</div>
+                                </div>
+                                <div class="pricing-card">
+                                    <label class="form-label">List price (₹)</label>
+                                    <input type="number" class="form-control" id="listPrice" placeholder="e.g. 100"
+                                        min="0" step="0.01" />
+                                </div>
+                                <div class="pricing-card">
+                                    <label class="form-label">Discount (%)</label>
+                                    <input type="number" class="form-control" id="discountPercent" placeholder="e.g. 40"
+                                        min="0" max="100" />
+                                </div>
+                                <div class="pricing-card">
+                                    <label class="form-label">GST rate (%)</label>
+                                    <input type="number" class="form-control" id="gstRate" placeholder="e.g. 20" min="0"
+                                        max="100" />
+                                </div>
+                                <div class="pricing-card">
+                                    <label class="form-label">Shipping (₹)</label>
+                                    <input type="number" class="form-control" id="shippingCharges" placeholder="e.g. 40"
+                                        min="0" step="0.01" />
+                                </div>
+                                <div class="pricing-card">
+                                    <label class="form-label">Stock level</label>
+                                    <input type="number" class="form-control" id="stockLevel" placeholder="e.g. 110"
+                                        min="0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group-step3">
+                        <button class="btn btn-back" id="backToStep2">Back</button>
+                        <button class="btn btn-complete" id="completeSetup">Complete Setup</button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="product-preview">
+                        <div class="preview-image">
+                            <i class="fas fa-box-open"></i>
+                            <img id="previewImg" src="" alt="" style="display: none;" />
+                        </div>
+                        <h5 id="previewTitle">Product Title</h5>
+                        <p id="previewDesc">Description will appear here...</p>
+                        <div class="product-price" id="previewPrice">₹0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Screen (hidden initially) -->
+        <div class="step-content" data-step="4" style="display: none;">
+            <div class="success-screen">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="success-title">🎉 Congratulations!</h2>
+                <p class="success-message">
+                    Your Shopnix store has been successfully set up! You can now start adding more products,
+                    customize your store design, and launch your online business.
+                </p>
+                <div class="success-actions">
+                    <a href="#" class="btn btn-next">
+                        <i class="fas fa-store me-2"></i> View Store
+                    </a>
+                    <a href="#" class="btn btn-complete">
+                        <i class="fas fa-cog me-2"></i> Store Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current step tracking
+        let currentStep = 1;
+        let selectedTheme = null;
+
+        // DOM elements
+        const stepContents = document.querySelectorAll(".step-content");
+        const steps = document.querySelectorAll(".step");
+        const themeButtons = document.querySelectorAll(".select-theme");
+        const toStep2Btn = document.getElementById("toStep2");
+        const backToStep1Btn = document.getElementById("backToStep1");
+        const toStep3Btn = document.getElementById("toStep3");
+        const backToStep2Btn = document.getElementById("backToStep2");
+        const completeSetupBtn = document.getElementById("completeSetup");
+        const hasHSNCheckbox = document.getElementById("hasHSN");
+        const hsnCodeInput = document.getElementById("hsnCode");
+        const productTypeInput = document.getElementById("productTypeInput");
+        const progressLine = document.querySelector(".step-indicator::before");
+
+        // Step navigation functions
+        function showStep(stepNum) {
+            currentStep = stepNum;
+
+            // Hide all step contents
+            stepContents.forEach(el => el.style.display = "none");
+
+            // Show current step content
+            document.querySelector(`[data-step="${stepNum}"]`).style.display = "block";
+
+            // Update step indicator
+            updateStepIndicator(stepNum);
+        }
+
+        function updateStepIndicator(stepNum) {
+            steps.forEach((step, index) => {
+                const stepIcon = step.querySelector(".step-icon");
+                const stepLabel = step.querySelector(".step-label");
+
+                // Reset all steps
+                stepIcon.classList.remove("active", "completed");
+                stepLabel.classList.remove("active", "completed");
+
+                // Update steps based on current position
+                if (index + 1 < stepNum) {
+                    stepIcon.classList.add("completed");
+                    stepIcon.innerHTML = '<i class="fas fa-check"></i>';
+                    stepLabel.classList.add("completed");
+                } else if (index + 1 === stepNum) {
+                    stepIcon.classList.add("active");
+                    stepLabel.classList.add("active");
+                }
+            });
+
+            // Update progress line
+            const progressPercent = ((stepNum - 1) / (steps.length - 1)) * 100;
+            document.documentElement.style.setProperty('--progress-percent', `${progressPercent}%`);
+        }
+
+        // Validate step 2 before proceeding
+        function validateStep2() {
+            const productType = productTypeInput.value.trim();
+            if (productType === "") {
+                productTypeInput.classList.add("is-invalid");
+                toStep3Btn.disabled = true;
+                return false;
+            } else {
+                productTypeInput.classList.remove("is-invalid");
+                toStep3Btn.disabled = false;
+                return true;
+            }
+        }
+
+        // Theme selection
+        themeButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                // Reset all theme buttons
+                themeButtons.forEach(b => {
+                    b.classList.remove("active");
+                    b.innerHTML = "Select Theme";
+                    b.closest(".theme-card").classList.remove("selected");
+                });
+
+                // Set active state for clicked button
+                btn.classList.add("active");
+                btn.innerHTML = '<i class="fas fa-check me-2"></i> Selected';
+                btn.closest(".theme-card").classList.add("selected");
+
+                // Enable continue button
+                toStep2Btn.classList.remove("d-none");
+
+                // Store selected theme
+                selectedTheme = btn.closest(".theme-card").querySelector("h4").textContent;
+            });
+        });
+
+        // Step 2 Live Update
+        productTypeInput.addEventListener("input", e => {
+            document.getElementById("productTypeBox").textContent = e.target.value || "Product type";
+            validateStep2();
+        });
+
+        document.getElementById("categoryInput").addEventListener("input", e => {
+            document.getElementById("categoryBox").textContent = e.target.value || "Category";
+        });
+
+        document.getElementById("subCategoryInput").addEventListener("input", e => {
+            document.getElementById("subCategoryBox").textContent = e.target.value || "Sub-category";
+        });
+
+        // Step 3 Live Preview
+        document.getElementById("prodName").addEventListener("input", e => {
+            document.getElementById("previewTitle").textContent = e.target.value || "Product Title";
+        });
+
+        document.getElementById("prodDesc").addEventListener("input", e => {
+            document.getElementById("previewDesc").textContent = e.target.value || "Description will appear here...";
+        });
+
+        // Update price preview based on net price
+        document.getElementById("netPrice").addEventListener("input", e => {
+            const price = e.target.value ? "₹" + e.target.value : "₹0";
+            document.getElementById("previewPrice").textContent = price;
+        });
+
+        // Image upload and preview
+        document.getElementById("prodImage").addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const previewImg = document.getElementById("previewImg");
+                    const previewIcon = previewImg.previousElementSibling;
+
+                    previewImg.src = event.target.result;
+                    previewImg.style.display = "block";
+                    previewIcon.style.display = "none";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Toggle HSN/SAC code field visibility
+        hasHSNCheckbox.addEventListener("change", function () {
+            hsnCodeInput.style.display = this.checked ? "block" : "none";
+        });
+
+        // Auto-calculate discount percentage when net and list prices change
+        function calculateDiscount() {
+            const netPrice = parseFloat(document.getElementById("netPrice").value) || 0;
+            const listPrice = parseFloat(document.getElementById("listPrice").value) || 0;
+
+            if (listPrice > 0 && netPrice > 0 && listPrice > netPrice) {
+                const discount = Math.round(((listPrice - netPrice) / listPrice) * 100);
+                document.getElementById("discountPercent").value = discount;
+            }
+        }
+
+        document.getElementById("netPrice").addEventListener("input", calculateDiscount);
+        document.getElementById("listPrice").addEventListener("input", calculateDiscount);
+
+        // Navigation event listeners
+        toStep2Btn.addEventListener("click", () => showStep(2));
+        backToStep1Btn.addEventListener("click", () => showStep(1));
+
+        toStep3Btn.addEventListener("click", function (e) {
+            if (!validateStep2()) {
+                e.preventDefault();
+                return;
+            }
+            showStep(3);
+        });
+
+        backToStep2Btn.addEventListener("click", () => showStep(2));
+
+        completeSetupBtn.addEventListener("click", function () {
+
+            const productName = document.getElementById("prodName").value.trim();
+            const netPrice = document.getElementById("netPrice").value.trim();
+
+            if (!productName) {
+                document.getElementById("prodName").classList.add("is-invalid");
+                document.getElementById("prodName").focus();
+                return;
+            } else {
+                document.getElementById("prodName").classList.remove("is-invalid");
+            }
+
+            if (!netPrice) {
+                document.getElementById("netPrice").classList.add("is-invalid");
+                document.getElementById("netPrice").focus();
+                return;
+            } else {
+                document.getElementById("netPrice").classList.remove("is-invalid");
+            }
+
+
+            showStep(4);
+
+
+            console.log("Setup completed with:", {
+                theme: selectedTheme,
+                productType: document.getElementById("productTypeInput").value,
+                category: document.getElementById("categoryInput").value,
+                subCategory: document.getElementById("subCategoryInput").value,
+                product: {
+                    name: productName,
+                    description: document.getElementById("prodDesc").value,
+                    sku: document.getElementById("skuCode").value,
+                    hsn: hasHSNCheckbox.checked ? document.getElementById("hsnCode").value : null,
+                    pricing: {
+                        netPrice: parseFloat(netPrice),
+                        listPrice: parseFloat(document.getElementById("listPrice").value) || 0,
+                        discountPercent: parseFloat(document.getElementById("discountPercent").value) || 0,
+                        gstRate: parseFloat(document.getElementById("gstRate").value) || 0,
+                        shippingCharges: parseFloat(document.getElementById("shippingCharges").value) || 0,
+                        includeGST: document.getElementById("includeGST").checked
+                    },
+                    stock: parseInt(document.getElementById("stockLevel").value) || 0,
+                    image: document.getElementById("prodImage").files[0]?.name || "No image"
+                }
+            });
+        });
+
+
+        showStep(1);
+        validateStep2();
+    </script>
+</body>
+
+</html>
